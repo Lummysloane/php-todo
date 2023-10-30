@@ -57,21 +57,6 @@ pipeline {
       }
     }
 
-    stage('Sonarqube Analysis') {
-            environment {
-                scannerHome = tool 'Sonar scanner'
-            }
-            steps {
-                withSonarQubeEnv('Sonarserver') {
-                    sh "${scannerHome}/bin/sonar-scanner"
-                  }
-                if ("${json.projectStatus.status}" == "ERROR") {
-                            currentBuild.result = 'FAILURE'
-                            error('Pipeline aborted due to quality gate failure.')
-                    }
-            }
-    }
-
     stage('SonarQube Quality Gate') {
       when { branch pattern: "^develop*|^hotfix*|^release*|^main*", comparator: "REGEXP"}
         environment {
